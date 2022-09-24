@@ -8,9 +8,18 @@
     <h1><a href="index.php">WEB</a></h1>
 
     <ol>
-        <li><a href="index.php?id=HTML">HTML</a></li>
-        <li><a href="index.php?id=CSS">CSS</a></li>
-        <li><a href="index.php?id=Javascript">Javascript</a></li>
+        <?php
+            $filelist = scandir('./data');
+            $i = 0;
+            while ($i < count($filelist)) {
+                if($filelist[$i] != '.') {
+                    if($filelist[$i] != '..') {
+                        echo "<li> <a href=\"index.php?id=$filelist[$i]\"> $filelist[$i] </a></li>\n";
+                    }
+                }
+                $i += 1;
+            }
+        ?>
     </ol>
 
     <h2> 
@@ -25,7 +34,7 @@
         ?> 
     </h2>
  
-    <?php
+    <?php 
 
         if(isset($_GET['id'])) {
             echo file_get_contents("data/".$_GET['id']);
