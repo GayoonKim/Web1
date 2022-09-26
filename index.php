@@ -56,6 +56,12 @@ function print_list()
 
         <a href="update.php?id=<?= $_GET['id'] ?>">update</a>
 
+        <form action="delete_process.php" method="POST">
+
+            <input type="hidden" name="id" value="<?= $_GET['id']?>">
+            <input type="submit" value="Delete">
+
+        </form>
 
     <?php } ?>
 
