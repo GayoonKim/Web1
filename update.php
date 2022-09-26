@@ -1,83 +1,37 @@
 <?php
-function print_title()
-{
-    if (isset($_GET['id'])) {
-        echo $_GET['id'];
-    } else {
-        echo 'Welcome';
-    }
-}
-
-function print_description()
-{
-    if (isset($_GET['id'])) {
-        echo file_get_contents("data/" . $_GET['id']);
-    } else {
-        echo "Hello, PHP";
-    }
-}
-
-function print_list()
-{
-    $filelist = scandir('./data');
-    $i = 0;
-    while ($i < count($filelist)) {
-        if ($filelist[$i] != '.') {
-            if ($filelist[$i] != '..') {
-                echo "<li> <a href=\"index.php?id=$filelist[$i]\"> $filelist[$i] </a></li>\n";
-            }
-        }
-        $i += 1;
-    }
-}
-
+require_once('lib/print.php');
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php
+require_once('view/top.php');
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <title> <?php print_title(); ?></title>
-</head>
+<?php if (isset($_GET['id'])) { ?>
+    <a href="update.php?id=<?= $_GET['id'] ?>"> Update </a>
+<?php } ?>
 
-<body>
-    <h1><a href="index.php">WEB</a></h1>
+<h2>
+    <form action="update_process.php" method="POST">
+        <input type="hidden" name="old_title" value="<?= $_GET['id'] ?>">
+        <p>
 
-    <ol>
-        <?php
-        print_list();
-        ?>
-    </ol>
+            <input type="text" placeholder="Title" name="title" value="<?php print_title(); ?>">
 
-    <a href="create.php"> Create </a>
+        </p>
 
-    <?php if (isset($_GET['id'])) { ?>
-        <a href="update.php?id=<?= $_GET['id'] ?>"> Update </a>
-    <?php } ?>
+        <p>
 
-    <h2>
-        <form action="update_process.php" method="POST">
-            <input type="hidden" name="old_title" value="<?= $_GET['id']?>">
-            <p>
+            <textarea name="description" placeholder="Description"><?php print_description(); ?></textarea>
 
-                <input type="text" placeholder="Title" name="title" value="<?php print_title(); ?>">
+        </p>
 
-            </p>
+        <p>
 
-            <p>
+            <input type="submit">
 
-                <textarea name="description" placeholder="Description"><?php print_description(); ?></textarea>
+        </p>
+</h2>
 
-            </p>
-
-            <p>
-
-                <input type="submit">
-
-            </p>
-    </h2>
-
-</body>
-
-</html>
+<?php
+require_once('view/bottom.php');
+?>

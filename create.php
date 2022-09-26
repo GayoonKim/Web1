@@ -1,79 +1,34 @@
 <?php
-function print_title()
-{
-    if (isset($_GET['id'])) {
-        echo $_GET['id'];
-    } else {
-        echo 'Welcome';
-    }
-}
-
-function print_description()
-{
-    if (isset($_GET['id'])) {
-        echo file_get_contents("data/" . $_GET['id']);
-    } else {
-        echo "Hello, PHP";
-    }
-}
-
-function print_list()
-{
-    $filelist = scandir('./data');
-    $i = 0;
-    while ($i < count($filelist)) {
-        if ($filelist[$i] != '.') {
-            if ($filelist[$i] != '..') {
-                echo "<li> <a href=\"index.php?id=$filelist[$i]\"> $filelist[$i] </a></li>\n";
-            }
-        }
-        $i += 1;
-    }
-}
-
+require_once('lib/print.php');
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php
+require_once('view/top.php');
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <title> <?php print_title(); ?></title>
-</head>
+<form action="create_process.php" method="POST">
+    <p>
 
-<body>
-    <h1><a href="index.php">WEB</a></h1>
+        <input type="text" placeholder="Title" name="title">
 
-    <ol>
-        <?php
-        print_list();
-        ?>
-    </ol>
+    </p>
 
-    <a href="create.php"> Create </a>
-    <form action="create_process.php" method="POST">
-        <p>
+    <p>
 
-            <input type="text" placeholder="Title" name="title">
+        <textarea name="description" placeholder="Description"></textarea>
 
-        </p>
+    </p>
 
-        <p>
+    <p>
 
-            <textarea name="description" placeholder="Description"></textarea>
+        <input type="submit">
 
-        </p>
+    </p>
 
-        <p>
-
-            <input type="submit">
-
-        </p>
-
-    </form>
+</form>
 
 
 
-</body>
-
-</html>
+<?php
+require_once('view/bottom.php');
+?>
