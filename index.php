@@ -51,7 +51,13 @@ function print_list()
     </ol>
 
     <a href="create.php"> Create </a>
-    <form action="create.php" method="POST"></form>
+
+    <?php if (isset($_GET['id'])) { ?>
+
+        <a href="update.php?id=<?= $_GET['id'] ?>">update</a>
+
+
+    <?php } ?>
 
     <h2> <?php print_title(); ?> </h2>
 
