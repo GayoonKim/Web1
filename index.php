@@ -1,32 +1,47 @@
 <?php
-require_once('lib/print.php');
-?>
+$conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
 
-<?php
-require_once('view/top.php');
-?>
+$sql = "SELECT * FROM topic";
+$result = mysqli_query($conn, $sql);
+$list = '';
+while ($row = mysqli_fetch_array($result)) {
 
-<?php if (isset($_GET['id'])) { ?>
+    $list = $list . "<li><a href=\"index.php?id={$row['id']}\">{$row['title']}</a></li>";
+}
 
-    <a href="update.php?id=<?= $_GET['id'] ?>">update</a>
-
-    <form action="delete_process.php" method="POST">
-
-        <input type="hidden" name="id" value="<?= $_GET['id'] ?>">
-        <input type="submit" value="Delete">
-
-    </form>
-
-<?php } ?>
-
-<h2> <?php print_title(); ?> </h2>
-
-<?php
-
-print_description();
+$article = array(
+    'title' => "Welcome",
+    'description' => "Hello, Web"
+);
+if (isset($_GET['id'])) {
+    $sql = "SELECT * FROM topic WHERE id={$_GET['id']}";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_array($result);
+    $article['title'] = $row['title'];
+    $article['description'] = $row['description'];
+}
 
 ?>
 
-<?php
-require_once('view/bottom.php');
-?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Web</title>
+</head>
+
+<body>
+    <h1> <a href="index.php">WEB</a></h1>
+
+    <ol>
+        <?= $list ?>
+    </ol>
+
+    <a href="create.php">Create</a>
+
+    <h2><?= $article['title'] ?></h2>
+    <?= $article['description'] ?>
+</body>
+
+</html>
