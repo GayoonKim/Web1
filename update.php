@@ -1,37 +1,55 @@
 <?php
-require_once('lib/print.php');
+$conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
+
+$sql = "SELECT * FROM topic";
+$result = mysqli_query($conn, $sql);
+$list = '';
+while ($row = mysqli_fetch_array($result)) {
+    $escaped_title = htmlspecialchars($row['title']);
+    $list = $list . "<li><a href=\"index.php?id={$row['id']}\">{$escaped_title}</a></li>";
+}
+
+$article = array(
+    'title' => "Welcome",
+    'description' => "Hello, Web"
+);
+$update_link = '';
+if (isset($_GET['id'])) {
+    $filtered = mysqli_real_escape_string($conn, $_GET['id']);
+    $sql = "SELECT * FROM topic WHERE id={$filtered}";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_array($result);
+    $article['title'] = htmlspecialchars($row['title']);
+    $article['description'] = htmlspecialchars($row['description']);
+
+    $update_link = '<a href="update.php?id=' . $_GET['id'] . '">Update</a>';
+}
+
 ?>
 
-<?php
-require_once('view/top.php');
-?>
+<!DOCTYPE html>
+<html lang="en">
 
-<?php if (isset($_GET['id'])) { ?>
-    <a href="update.php?id=<?= $_GET['id'] ?>"> Update </a>
-<?php } ?>
+<head>
+    <meta charset="UTF-8">
+    <title>Web</title>
+</head>
 
-<h2>
-    <form action="update_process.php" method="POST">
-        <input type="hidden" name="old_title" value="<?= $_GET['id'] ?>">
-        <p>
+<body>
+    <h1> <a href="index.php">WEB</a></h1>
 
-            <input type="text" placeholder="Title" name="title" value="<?php print_title(); ?>">
+    <ol>
+        <?= $list ?>
+    </ol>
 
-        </p>
+    <form action="process_update.php" method="POST">
+        <input type="hidden" name="id" value="<?= $_GET['id'] ?>">
+        <p><input type="text" name="title" placeholder="Title" value="<?= $article['title'] ?>"></p>
+        <p><textarea name="description" placeholder="Description"><?= $article['description'] ?></textarea></p>
+        <p><input type="submit"></p>
 
-        <p>
+    </form>
 
-            <textarea name="description" placeholder="Description"><?php print_description(); ?></textarea>
+</body>
 
-        </p>
-
-        <p>
-
-            <input type="submit">
-
-        </p>
-</h2>
-
-<?php
-require_once('view/bottom.php');
-?>
+</html>
