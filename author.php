@@ -1,8 +1,5 @@
 <?php
 $conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +18,7 @@ $conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
             <td>id</td>
             <td>name</td>
             <td>profile</td>
+            <td></td>
             <?php
             $sql = "SELECT * FROM author";
             $result = mysqli_query($conn, $sql);
@@ -36,6 +34,14 @@ $conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
             <td><?= $filtered['id'] ?></td>
             <td><?= $filtered['name'] ?></td>
             <td><?= $filtered['profile'] ?></td>
+            <td> <a href="author.php?id=<?= $filtered['id'] ?>"> Update </a></td>
+            <td>
+                <form action="process_delete_author.php" method="POST" onsubmit="if(!confirm('Sure?')){return false;}">
+                    <input type="hidden" name="id" value="<?= $filtered['id'] ?>">
+                    <input type="submit" value="Delete">
+
+                </form>
+            </td>
         </tr>
 
     <?php
@@ -43,11 +49,38 @@ $conn = mysqli_connect('localhost', 'root', 'asdf1234', 'opentutorials');
     ?>
     </tr>
     </table>
-    <form action="process_create_author.php" method="POST">
-            <p><input type="text" name="name" placeholder="Name"></p>
-            <p><textarea name="profile" placeholder="Profile"></textarea></p>
-            <p><input type="submit" value="Create author"></p>
-        </form>
+
+    <?php
+    $escaped = array(
+        'name' => '',
+        'profile' => ''
+    );
+
+    $lable_submit = 'Create author';
+    $form_action = 'process_create_author.php';
+    $form_id = '';
+    if (isset($_GET['id'])) {
+        $filtered_id = mysqli_real_escape_string($conn, $_GET['id']);
+        settype($filtered_id, 'integer');
+        $sql = "SELECT * FROM author WHERE id = {$filtered_id}";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_array($result);
+
+        $escaped['name'] = htmlspecialchars($row['name']);
+        $escaped['profile'] = htmlspecialchars($row['profile']);
+
+        $lable_submit = 'Update author';
+        $form_action = 'process_update_author.php';
+        $form_id = '<input type="hidden" name="id" value="' . $_GET['id'] . '">';
+    }
+    ?>
+
+    <form action="<?= $form_action ?>" method="POST">
+        <?= $form_id ?>
+        <p><input type="text" name="name" placeholder="Name" value="<?= $escaped['name'] ?>"></p>
+        <p><textarea name="profile" placeholder="Profile"><?= $escaped['profile'] ?></textarea></p>
+        <p><input type="submit" value="<?= $lable_submit ?>"></p>
+    </form>
 </body>
 
 </html>
